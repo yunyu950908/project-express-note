@@ -18,7 +18,7 @@ router.post("/notes/edit", (req, res, next) => {
 });
 
 /* POST /notes/delete */
-router.POST("/notes/delete", (req, res, next) => {
+router.post("/notes/delete", (req, res, next) => {
     console.log("delete")
 });
 

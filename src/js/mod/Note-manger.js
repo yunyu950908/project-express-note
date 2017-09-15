@@ -36,3 +36,4 @@ const NoteManager = (function () {
 })();
 
 export {NoteManager}
+

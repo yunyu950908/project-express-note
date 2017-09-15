@@ -118,6 +118,48 @@ const Note = (function () {
             });
         },
 
+        // add note
+        add: function (msg) {
+            console.log('add...');
+            $.post('/api/notes/add', {note: msg})
+                .done((ret) => {
+                    if (ret.status === 0) {
+                        Toast.init('add success');
+                    } else {
+                        this.$note.remove();
+                        EventCenter.fire('waterfall')
+                        Toast.init(ret.errorMsg);
+                    }
+                });
+        },
+
+        // edit note
+        edit: function (msg) {
+            $.post('/api/notes/edit', {
+                id: this.id,
+                note: msg
+            }).done((ret) => {
+                if (ret.status === 0) {
+                    Toast.init('update success');
+                } else {
+                    Toast.init(ret.errorMsg);
+                }
+            })
+        },
+
+        // delete note
+        delete: function () {
+            $.post('/api/notes/delete', {id: this.id})
+                .done((ret) => {
+                    if (ret.status === 0) {
+                        Toast.init('delete success');
+                        this.$note.remove();
+                        EventCenter.fire('waterfall')
+                    } else {
+                        Toast.init(ret.errorMsg);
+                    }
+                });
+        }
     };
 
     return {

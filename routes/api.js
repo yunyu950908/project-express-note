@@ -5,6 +5,16 @@ const Note = require("../model/note").Note;
 /* GET /notes */
 router.get("/notes", (req, res, next) => {
     console.log("notes")
+    res.send({
+        status: 0,
+        data: {
+            opt1: {
+                id: 11,
+                text: "22"
+            }
+        }
+    })
+
 });
 
 /* POST /notes/add */

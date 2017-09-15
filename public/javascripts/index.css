@@ -14,8 +14,11 @@
   display: none; }
 .note {
   position: absolute;
-  color: #333;
-  width: 160px;
+  font-family: "\534E\6587\6977\4F53", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+  color: rgba(66, 66, 66, 0.8);
+  width: 200px;
   margin: 20px 10px;
   transition: all 0.5s; }
   .note .note-head {

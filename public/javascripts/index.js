@@ -63,103 +63,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function($) {
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.Toast = undefined;
-
-__webpack_require__(2);
-
-var Toast = function () {
-    function Toast(msg, time) {
-        this.msg = msg;
-        this.dismissTime = time || 1000;
-        this.createToast();
-        this.showToast();
-    }
-
-    Toast.prototype = {
-        createToast: function createToast() {
-            var tpl = '<div class="toast">' + this.msg + '</div>';
-            this.$toast = $(tpl);
-            $('body').append(this.$toast);
-        },
-
-        showToast: function showToast() {
-            var _this = this;
-
-            this.$toast.fadeIn(300, function () {
-                setTimeout(function () {
-                    _this.$toast.fadeOut(300, function () {
-                        _this.$toast.remove();
-                    });
-                }, _this.dismissTime);
-            });
-        }
-    };
-
-    return {
-        init: function init(msg, time) {
-            return new Toast(msg, time);
-        }
-    };
-}();
-
-// Toast("hello")
-
-exports.Toast = Toast;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function($) {
-
-var _NoteManger = __webpack_require__(6);
-
-var _EventCenter = __webpack_require__(5);
-
-var _Waterfall = __webpack_require__(9);
-
-__webpack_require__(4);
-
-var noteWaterfall = _Waterfall.Waterfall.init($('#content'));
-
-_NoteManger.NoteManager.load();
-
-$('.add-note').on('click', function () {
-    _NoteManger.NoteManager.add();
-});
-
-_EventCenter.EventCenter.on('waterfall', function () {
-    noteWaterfall.render();
-});
-
-setInterval(function () {
-    _EventCenter.EventCenter.fire("waterfall");
-}, 60000);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10419,13 +10327,7 @@ return jQuery;
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 5 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10492,7 +10394,61 @@ var EventCenter = function () {
 exports.EventCenter = EventCenter;
 
 /***/ }),
-/* 6 */
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Toast = undefined;
+
+__webpack_require__(9);
+
+var Toast = function () {
+    function Toast(msg, time) {
+        this.msg = msg;
+        this.dismissTime = time || 1000;
+        this.createToast();
+        this.showToast();
+    }
+
+    Toast.prototype = {
+        createToast: function createToast() {
+            var tpl = '<div class="toast">' + this.msg + '</div>';
+            this.$toast = $(tpl);
+            $('body').append(this.$toast);
+        },
+
+        showToast: function showToast() {
+            var _this = this;
+
+            this.$toast.fadeIn(300, function () {
+                setTimeout(function () {
+                    _this.$toast.fadeOut(300, function () {
+                        _this.$toast.remove();
+                    });
+                }, _this.dismissTime);
+            });
+        }
+    };
+
+    return {
+        init: function init(msg, time) {
+            return new Toast(msg, time);
+        }
+    };
+}();
+
+// Toast("hello")
+
+exports.Toast = Toast;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10503,11 +10459,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.NoteManager = undefined;
 
-var _Toast = __webpack_require__(0);
+var _Toast = __webpack_require__(2);
 
 var _Note = __webpack_require__(7);
 
-var _EventCenter = __webpack_require__(5);
+var _EventCenter = __webpack_require__(1);
 
 var NoteManager = function () {
 
@@ -10541,7 +10497,115 @@ var NoteManager = function () {
 }();
 
 exports.NoteManager = NoteManager;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+/*
+* 初始化瀑布流(jq依赖)
+* Waterfall.init($(selector));
+* author：yunyu950908
+* */
+
+var Waterfall = function () {
+    function Waterfall($ct) {
+        this.$ct = $ct;
+        this.$items = null;
+        this.itemWidth = 0;
+        this.colNum = 0;
+        this.colSumHeight = [];
+        this.render();
+        this.resize();
+    }
+
+    Waterfall.prototype = {
+
+        render: function render() {
+            var _this = this;
+
+            this.$items = this.$ct.children();
+            // console.log(this.$items)
+            this.itemWidth = this.$items.outerWidth(true);
+            this.colNum = parseInt($(window).width() / this.itemWidth);
+            // console.log(this.colNum)
+            for (var i = 0; i < this.colNum; i++) {
+                this.colSumHeight[i] = 0;
+            }
+            this.$items.each(function (i, e) {
+                var minVal = Math.min.apply(null, _this.colSumHeight);
+                var minIndex = _this.colSumHeight.indexOf(minVal);
+                $(e).css({
+                    top: _this.colSumHeight[minIndex],
+                    left: _this.itemWidth * minIndex
+                });
+                _this.colSumHeight[minIndex] += $(e).outerHeight(true);
+            });
+        },
+
+        resize: function resize() {
+            var _this2 = this;
+
+            $(window).on("resize", function () {
+                _this2.render();
+            });
+        }
+    };
+
+    return {
+        init: function init($ct) {
+            return new Waterfall($ct);
+        }
+    };
+}();
+
+exports.Waterfall = Waterfall;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+
+var _NoteManger = __webpack_require__(3);
+
+var _EventCenter = __webpack_require__(1);
+
+var _Waterfall = __webpack_require__(4);
+
+__webpack_require__(5);
+
+var noteWaterfall = _Waterfall.Waterfall.init($('#content'));
+
+_NoteManger.NoteManager.load();
+
+$('.add-note').on('click', function () {
+    _NoteManger.NoteManager.add();
+});
+
+_EventCenter.EventCenter.on('waterfall', function () {
+    noteWaterfall.render();
+});
+
+setInterval(function () {
+    _EventCenter.EventCenter.fire("waterfall");
+}, 60000);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 7 */
@@ -10557,9 +10621,9 @@ exports.Note = undefined;
 
 __webpack_require__(8);
 
-var _Toast = __webpack_require__(0);
+var _Toast = __webpack_require__(2);
 
-var _EventCenter = __webpack_require__(5);
+var _EventCenter = __webpack_require__(1);
 
 var Note = function () {
     function Note(opts) {
@@ -10594,7 +10658,7 @@ var Note = function () {
         // create DOM HTML element
         // set new note position
         createNote: function createNote() {
-            var tpl = '<div class="note">' + '<div class="note-head"><span class="delete">&times;</span></div>' + '<div class="note-ct" contenteditable="true"></div>' + '</div>';
+            var tpl = '<div class="note">' + '<div class="note-head"><span class="delete fa fa-ban"></span></div>' + '<div class="note-ct" contenteditable="true"></div>' + '</div>';
             this.$note = $(tpl);
             this.$note.find('.note-ct').html(this.opts.context);
             this.opts.$ct.append(this.$note);
@@ -10724,7 +10788,7 @@ var Note = function () {
 }();
 
 exports.Note = Note;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 8 */
@@ -10734,73 +10798,9 @@ exports.Note = Note;
 
 /***/ }),
 /* 9 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-/* WEBPACK VAR INJECTION */(function($) {
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-/*
-* 初始化瀑布流(jq依赖)
-* Waterfall.init($(selector));
-* author：yunyu950908
-* */
-
-var Waterfall = function () {
-    function Waterfall($ct) {
-        this.$ct = $ct;
-        this.$items = null;
-        this.itemWidth = 0;
-        this.colNum = 0;
-        this.colSumHeight = [];
-        this.render();
-        this.resize();
-    }
-
-    Waterfall.prototype = {
-
-        render: function render() {
-            var _this = this;
-
-            this.$items = this.$ct.children();
-            // console.log(this.$items)
-            this.itemWidth = this.$items.outerWidth(true);
-            this.colNum = parseInt($(window).width() / this.itemWidth);
-            // console.log(this.colNum)
-            for (var i = 0; i < this.colNum; i++) {
-                this.colSumHeight[i] = 0;
-            }
-            this.$items.each(function (i, e) {
-                var minVal = Math.min.apply(null, _this.colSumHeight);
-                var minIndex = _this.colSumHeight.indexOf(minVal);
-                $(e).css({
-                    top: _this.colSumHeight[minIndex],
-                    left: _this.itemWidth * minIndex
-                });
-                _this.colSumHeight[minIndex] += $(e).outerHeight(true);
-            });
-        },
-
-        resize: function resize() {
-            var _this2 = this;
-
-            $(window).on("resize", function () {
-                _this2.render();
-            });
-        }
-    };
-
-    return {
-        init: function init($ct) {
-            return new Waterfall($ct);
-        }
-    };
-}();
-
-exports.Waterfall = Waterfall;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+// removed by extract-text-webpack-plugin
 
 /***/ })
 /******/ ]);

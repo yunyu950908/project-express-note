@@ -42,7 +42,7 @@ const Note = (function () {
         // set new note position
         createNote: function () {
             let tpl = '<div class="note">'
-                + '<div class="note-head"><span class="delete">&times;</span></div>'
+                + '<div class="note-head"><span class="delete fa fa-ban"></span></div>'
                 + '<div class="note-ct" contenteditable="true"></div>'
                 + '</div>';
             this.$note = $(tpl);

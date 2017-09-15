@@ -125,11 +125,32 @@ exports.Toast = Toast;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function($) {
 
+var _NoteManger = __webpack_require__(6);
 
-var _Toast = __webpack_require__(0);
+var _EventCenter = __webpack_require__(5);
 
-_Toast.Toast.init("haha");
+var _Waterfall = __webpack_require__(9);
+
+__webpack_require__(4);
+
+var noteWaterfall = _Waterfall.Waterfall.init($('#content'));
+
+_NoteManger.NoteManager.load();
+
+$('.add-note').on('click', function () {
+    _NoteManger.NoteManager.add();
+});
+
+_EventCenter.EventCenter.on('waterfall', function () {
+    noteWaterfall.render();
+});
+
+setInterval(function () {
+    _EventCenter.EventCenter.fire("waterfall");
+}, 60000);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
 /* 2 */
@@ -10396,6 +10417,389 @@ if ( !noGlobal ) {
 return jQuery;
 } );
 
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+/*
+* dependence: none
+* publish / subscribe
+* EventCenter.on(evt, fn) // set event handler
+* EventCenter.once(evt, fn) // set , and this event will be triggered at most once
+* EventCenter.fire(evt) // trigger event
+* EventCenter.off(evt) // remove event
+* author：yunyu950908
+* */
+
+var EventCenter = function () {
+    var onceEvent = {};
+    var events = {};
+
+    function on(evt, fn) {
+        if (events[evt]) {
+            events[evt].push(fn);
+        } else {
+            events[evt] = [fn];
+        }
+    }
+
+    function once(evt, fn) {
+        if (onceEvent[evt]) {
+            onceEvent[evt].push(fn);
+        } else {
+            onceEvent[evt] = [fn];
+        }
+    }
+
+    function fire(evt) {
+        if (events[evt]) {
+            events[evt].forEach(function (fn) {
+                fn();
+            });
+        }
+        if (onceEvent[evt]) {
+            onceEvent[evt].forEach(function (fn) {
+                fn();
+            });
+            onceEvent[evt] = [];
+        }
+    }
+
+    function off(evt) {
+        delete events[evt];
+    }
+
+    return {
+        on: on,
+        once: once,
+        fire: fire,
+        off: off
+    };
+}();
+exports.EventCenter = EventCenter;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.NoteManager = undefined;
+
+var _Toast = __webpack_require__(0);
+
+var _Note = __webpack_require__(7);
+
+var _EventCenter = __webpack_require__(5);
+
+var NoteManager = function () {
+
+    function load() {
+        $.get('/api/notes').done(function (ret) {
+            if (ret.status == 0) {
+                $.each(ret.data, function (idx, article) {
+                    _Note.Note.init({
+                        id: article.id,
+                        context: article.text
+                    });
+                });
+                _EventCenter.EventCenter.fire('waterfall');
+            } else {
+                _Toast.Toast.init(ret.errorMsg);
+            }
+        }).fail(function () {
+            _Toast.Toast.init('网络异常');
+        });
+    }
+
+    function add() {
+        _Note.Note.init();
+    }
+
+    return {
+        load: load,
+        add: add
+    };
+}();
+
+exports.NoteManager = NoteManager;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Note = undefined;
+
+__webpack_require__(8);
+
+var _Toast = __webpack_require__(0);
+
+var _EventCenter = __webpack_require__(5);
+
+var Note = function () {
+    function Note(opts) {
+        this.opts = opts;
+        this.timer = null;
+        this.initOpts(opts);
+        this.createNote();
+        this.setStyle();
+        this.bindEvent();
+    }
+
+    Note.prototype = {
+        colors: [['#ea9b35', '#efb04e'], // headColor, containerColor
+        ['#dd598b', '#e672a2'], ['#eee34b', '#f2eb67'], ['#c24226', '#d15a39'], ['#c1c341', '#d0d25c'], ['#3f78c3', '#5591d2']],
+
+        // default setting
+        // note id , note container , note context
+        defaultOpts: {
+            id: '',
+            $ct: $('#content').length > 0 ? $('#content') : $('body'),
+            context: 'input here'
+        },
+
+        // init note
+        initOpts: function initOpts(opts) {
+            this.opts = $.extend({}, this.defaultOpts, opts || {});
+            if (this.opts.id) {
+                this.id = this.opts.id;
+            }
+        },
+
+        // create DOM HTML element
+        // set new note position
+        createNote: function createNote() {
+            var tpl = '<div class="note">' + '<div class="note-head"><span class="delete">&times;</span></div>' + '<div class="note-ct" contenteditable="true"></div>' + '</div>';
+            this.$note = $(tpl);
+            this.$note.find('.note-ct').html(this.opts.context);
+            this.opts.$ct.append(this.$note);
+            if (!this.id) this.$note.css({
+                top: "50px",
+                left: "50px"
+            });
+        },
+
+        // set note style
+        setStyle: function setStyle() {
+            var color = this.colors[Math.floor(Math.random() * 6)];
+            this.$note.find('.note-head').css('background-color', color[0]);
+            this.$note.find('.note-ct').css('background-color', color[1]);
+        },
+
+        // call waterfall layout
+        setLayout: function setLayout() {
+            if (this.timer) {
+                clearTimeout(this.timer);
+            }
+            this.timer = setTimeout(function () {
+                _EventCenter.EventCenter.fire('waterfall');
+            }, 100);
+        },
+
+        // bind note event
+        bindEvent: function bindEvent() {
+            var _this = this;
+
+            var $note = this.$note,
+                $noteHead = $note.find('.note-head'),
+                $noteCt = $note.find('.note-ct'),
+                $delete = $note.find('.delete');
+
+            $delete.on('click', function () {
+                _this.delete();
+            });
+
+            // contenteditable ==> no change event
+            // try focus / blur, copy / paste
+            $noteCt.on('focus', function () {
+                if ($noteCt.html() == 'input here') $noteCt.html('');
+                $noteCt.data('before', $noteCt.html());
+            }).on('blur paste', function () {
+                if ($noteCt.data('before') != $noteCt.html()) {
+                    $noteCt.data('before', $noteCt.html());
+                    _this.setLayout();
+                    if (_this.id) {
+                        _this.edit($noteCt.html());
+                    } else {
+                        _this.add($noteCt.html());
+                    }
+                }
+            });
+
+            // note move ==> mouse down
+            // note fixed ==> mouse up
+            $noteHead.on('mousedown', function (e) {
+                var evtX = e.pageX - $note.offset().left,
+                    evtY = e.pageY - $note.offset().top;
+                $note.addClass('draggable').data('evtPos', { x: evtX, y: evtY });
+            }).on('mouseup', function () {
+                $note.removeClass('draggable').removeData('pos');
+            });
+
+            // set position ==> mouse move
+            $('body').on('mousemove', function (e) {
+                $('.draggable').length && $('.draggable').offset({
+                    top: e.pageY - $('.draggable').data('evtPos').y,
+                    left: e.pageX - $('.draggable').data('evtPos').x
+                });
+            });
+        },
+
+        // add note
+        add: function add(msg) {
+            var _this2 = this;
+
+            console.log('add...');
+            $.post('/api/notes/add', { note: msg }).done(function (ret) {
+                if (ret.status === 0) {
+                    _Toast.Toast.init('add success');
+                } else {
+                    _this2.$note.remove();
+                    _EventCenter.EventCenter.fire('waterfall');
+                    _Toast.Toast.init(ret.errorMsg);
+                }
+            });
+        },
+
+        // edit note
+        edit: function edit(msg) {
+            $.post('/api/notes/edit', {
+                id: this.id,
+                note: msg
+            }).done(function (ret) {
+                if (ret.status === 0) {
+                    _Toast.Toast.init('update success');
+                } else {
+                    _Toast.Toast.init(ret.errorMsg);
+                }
+            });
+        },
+
+        // delete note
+        delete: function _delete() {
+            var _this3 = this;
+
+            $.post('/api/notes/delete', { id: this.id }).done(function (ret) {
+                if (ret.status === 0) {
+                    _Toast.Toast.init('delete success');
+                    _this3.$note.remove();
+                    _EventCenter.EventCenter.fire('waterfall');
+                } else {
+                    _Toast.Toast.init(ret.errorMsg);
+                }
+            });
+        }
+    };
+
+    return {
+        init: function init(opts) {
+            new Note(opts);
+        }
+    };
+}();
+
+exports.Note = Note;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function($) {
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+/*
+* 初始化瀑布流(jq依赖)
+* Waterfall.init($(selector));
+* author：yunyu950908
+* */
+
+var Waterfall = function () {
+    function Waterfall($ct) {
+        this.$ct = $ct;
+        this.$items = null;
+        this.itemWidth = 0;
+        this.colNum = 0;
+        this.colSumHeight = [];
+        this.render();
+        this.resize();
+    }
+
+    Waterfall.prototype = {
+
+        render: function render() {
+            var _this = this;
+
+            this.$items = this.$ct.children();
+            // console.log(this.$items)
+            this.itemWidth = this.$items.outerWidth(true);
+            this.colNum = parseInt($(window).width() / this.itemWidth);
+            // console.log(this.colNum)
+            for (var i = 0; i < this.colNum; i++) {
+                this.colSumHeight[i] = 0;
+            }
+            this.$items.each(function (i, e) {
+                var minVal = Math.min.apply(null, _this.colSumHeight);
+                var minIndex = _this.colSumHeight.indexOf(minVal);
+                $(e).css({
+                    top: _this.colSumHeight[minIndex],
+                    left: _this.itemWidth * minIndex
+                });
+                _this.colSumHeight[minIndex] += $(e).outerHeight(true);
+            });
+        },
+
+        resize: function resize() {
+            var _this2 = this;
+
+            $(window).on("resize", function () {
+                _this2.render();
+            });
+        }
+    };
+
+    return {
+        init: function init($ct) {
+            return new Waterfall($ct);
+        }
+    };
+}();
+
+exports.Waterfall = Waterfall;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ })
 /******/ ]);

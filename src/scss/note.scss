@@ -1,20 +1,20 @@
-.note{
+.note {
   position: absolute;;
   color: #333;
   width: 160px;
   margin: 20px 10px;
   transition: all 0.5s;
 
-  .note-head{
+  .note-head {
     height: 20px;
     background-color: #ea9b35;
     cursor: move;
 
-    &:hover .delete{
+    &:hover .delete {
       opacity: 1;
     }
 
-    &:before{
+    &:before {
       position: absolute;
       left: 50%;
       top: -11px;
@@ -41,7 +41,7 @@
     }
   }
 
-  .note-ct{
+  .note-ct {
     padding: 10px;
     background-color: #efb04e;
     outline: none;
@@ -60,9 +60,8 @@
 
 }
 
-
-.draggable{
+.draggable {
   opacity: 0.8;
-  cursor:move;
+  cursor: move;
   transition: none;
 }

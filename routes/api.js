@@ -11,13 +11,13 @@ router.get("/notes", (req, res, next) => {
             status: 0,
             data: notes
         });
-        console.log("get all")
+        console.log("---- get all ----")
     }).catch(err => {
         res.send({
             status: 1,
             errorMsg: "获取失败，数据库故障"
         });
-        console.log("add failed", err)
+        console.log("---- add failed ----", err)
     });
 });
 
@@ -26,13 +26,13 @@ router.post("/notes/add", (req, res, next) => {
     let note = req.body.note;
     Note.create({text: note}).then(() => {
         res.send({status: 0});
-        console.log("add success", note)
+        console.log("---- add success ----", note)
     }).catch(err => {
         res.send({
             status: 1,
             errorMsg: "添加失败，数据库故障"
         });
-        console.log("add failed", err)
+        console.log("---- add failed ----", err)
     });
 });
 
@@ -46,27 +46,27 @@ router.post("/notes/edit", (req, res, next) => {
         }
     }).then(() => {
         res.send({status: 0});
-        console.log("edit success");
+        console.log("---- edit success ----");
     }).catch(err => {
         res.send({
             status: 1,
             errorMsg: "更新失败，数据库故障"
         });
-        console.log("edit failed", err)
+        console.log("---- edit failed ----", err)
     });
 });
 
 /* POST /notes/delete */
 router.post("/notes/delete", (req, res, next) => {
     Note.destroy({where: {id: req.body.id}}).then(() => {
-        res.send({status: 0})
-        console.log("delete success");
+        res.send({status: 0});
+        console.log("---- delete success ----");
     }).catch(err => {
         res.send({
             status: 1,
             errorMsg: "更新失败，数据库故障"
         });
-        console.log("edit failed", note)
+        console.log("---- edit failed ----", note)
     });
 });
 

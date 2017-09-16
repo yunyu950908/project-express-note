@@ -5,10 +5,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// session and passport
+var session = require("express-session");
+var passport = require("passport");
+
 var index = require('./routes/index');
 // var users = require('./routes/users');
-
-var api = require("./routes/api");
+var api = require("./routes/api"); // note func
+var auth = require("./routes/auth"); // login func
 
 var app = express();
 
@@ -24,10 +28,15 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// session and passport
+app.use(session({secret: "sessionsecret"}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/', index);
 // app.use('/users', users);
-
-app.use("/api", api);
+app.use("/api", api); // note router
+app.use("/auth", auth); // login router
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

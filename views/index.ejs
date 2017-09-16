@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title><%= title %></title>
+    <title>yunyu.note</title>
     <link rel='stylesheet' href='/javascripts/index.css'/>
     <link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
@@ -11,11 +11,26 @@
         <span class="fa fa-plus"></span> 添加
     </a>
     <ul class="user-area">
+        <% if(isLogin){ %>
+        <li>
+            <img src="<%= user.avatar %>" alt="">
+        </li>
+        <li>
+            <span title="<%= user.username %>"><%= user.username %></span>
+        </li>
+        <li>
+            <span class="line"> | </span>
+        </li>
+        <li>
+            <a class="logout" href="/auth/logout">注销</a>
+        </li>
+        <% }else{ %>
         <li>
             <a class="login" title="GitHub登录" href="/auth/github">
                 <span class="fa fa-github"></span>GitHub登录
             </a>
         </li>
+        <% } %>
     </ul>
 
 </div>

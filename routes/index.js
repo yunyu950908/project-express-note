@@ -3,9 +3,9 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    let loginData;
+    let data;
     if (req.session.user) {
-        loginData = {
+        data = {
             isLogin: true,
             user: {
                 avatar: req.session.user.avatar,
@@ -13,11 +13,11 @@ router.get('/', function (req, res, next) {
             }
         }
     } else {
-        loginData = {
+        data = {
             isLogin: false
         }
     }
-    res.render('index', loginData);
+    res.render('index', data);
 });
 
 module.exports = router;

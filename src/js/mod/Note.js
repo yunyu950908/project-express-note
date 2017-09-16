@@ -36,7 +36,7 @@ const Note = (function () {
             if (this.opts.id) {
                 this.id = this.opts.id;
             }
-            console.log(opts)
+            // console.log(opts)
         },
 
         // create DOM HTML element
@@ -152,6 +152,7 @@ const Note = (function () {
 
         // delete note
         delete: function () {
+            console.log(this.id)
             $.post('/api/notes/delete', {id: this.id})
                 .done((ret) => {
                     if (ret.status === 0) {

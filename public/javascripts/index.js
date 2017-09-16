@@ -10653,7 +10653,7 @@ var Note = function () {
             if (this.opts.id) {
                 this.id = this.opts.id;
             }
-            console.log(opts);
+            // console.log(opts)
         },
 
         // create DOM HTML element
@@ -10771,6 +10771,7 @@ var Note = function () {
         delete: function _delete() {
             var _this3 = this;
 
+            console.log(this.id);
             $.post('/api/notes/delete', { id: this.id }).done(function (ret) {
                 if (ret.status === 0) {
                     _Toast.Toast.init('delete success');

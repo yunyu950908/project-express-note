@@ -26,7 +26,7 @@ PORT=2233 node ./bin/www
 6. 完成 `Note-manger` 模块，控制 `Note` 事件
 7. 完成 `note.js` 模块，使用 `sequelize` + `sqlite3` 存储数据
 8. 完成路由 `api.js`, mock 数据改成真实数据
-9. 完成路由 `auth.js`，调用 github 登录接口
+9. 完成路由 `auth.js`，调用 github-passport
 10. 完成中间件 `app.js`，设置 `session`
 11. 完成 `index.ejs` 模板，切换登录展示
 12. 修正路由 `api.js`，`session` 判断用户增删改权限 + 错误信息反馈
@@ -36,7 +36,7 @@ PORT=2233 node ./bin/www
 
 ## 用到的技术栈
 
-** 前端： **
+**前端：**
 1. webpack 前端模块打包
 2. SCSS 样式预处理器
 3. npm 包管理
@@ -45,7 +45,7 @@ PORT=2233 node ./bin/www
 6. pub / sub 设计模式
 7. 前后端联调
 
-** 后端： **
+**后端：**
 1. express ( based on Node.js ) 路由 中间件
 2. MVC 分离
 3. sequelize + sqlite3 数据库
@@ -56,6 +56,6 @@ PORT=2233 node ./bin/www
 8. linux
 
 ## 其他
-1. bug 提交或其他问题，移步 [ issue ](./issue)
+1. bug 提交或其他问题，移步 [ issue ](./issues)
 2. Author: AlbertLee
 3. 协议 [ MIT ](./LICENSE)

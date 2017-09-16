@@ -36,6 +36,7 @@ const Note = (function () {
             if (this.opts.id) {
                 this.id = this.opts.id;
             }
+            console.log(opts)
         },
 
         // create DOM HTML element
@@ -48,10 +49,10 @@ const Note = (function () {
             this.$note = $(tpl);
             this.$note.find('.note-ct').html(this.opts.context);
             this.opts.$ct.append(this.$note);
-            if (!this.id) this.$note.css({
-                top: "50px",
-                left: "50px",
-            });
+            if (!this.id) this.$note.animate({
+                top: ((Math.random() + 1) * $(window).height()) * 0.3,
+                left: ((Math.random() + 1) * $(window).width()) * 0.3,
+            }, 100)
         },
 
         // set note style
@@ -88,7 +89,7 @@ const Note = (function () {
                 if ($noteCt.html() == 'input here') $noteCt.html('');
                 $noteCt.data('before', $noteCt.html());
             }).on('blur paste', () => {
-                if ($noteCt.data('before') != $noteCt.html()) {
+                if ($noteCt.data('before') !== $noteCt.html()) {
                     $noteCt.data('before', $noteCt.html());
                     this.setLayout();
                     if (this.id) {
@@ -121,7 +122,9 @@ const Note = (function () {
         // add note
         add: function (msg) {
             console.log('add...');
-            $.post('/api/notes/add', {note: msg})
+            $.post('/api/notes/add', {
+                note: msg
+            })
                 .done((ret) => {
                     if (ret.status === 0) {
                         Toast.init('add success');

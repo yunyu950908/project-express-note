@@ -6,14 +6,14 @@ const passport = require("passport");
 const GithubStrategy = require("passport-github").Strategy;
 
 passport.serializeUser(function (user, done) {
-    console.log('---serializeUser---');
-    console.log(user);
+    // console.log('---serializeUser---');
+    // console.log(user);
     done(null, user);
 });
 
 passport.deserializeUser(function (obj, done) {
-    console.log('---deserializeUser---');
-    console.log(obj)
+    // console.log('---deserializeUser---');
+    // console.log(obj)
     done(null, obj);
 });
 
@@ -37,15 +37,15 @@ router.get('/github', passport.authenticate('github'));
 router.get('/github/callback',
     passport.authenticate('github', {failureRedirect: '/login'}),
     function (req, res) {
-        console.log("success111111111111111.success.................success.................success.................")
-        console.log(req.user);
+        // console.log("success111111111111111.success.................success.................success.................")
+        // console.log(req.user);
         req.session.user = {
             id: req.user.id,
             username: req.user.displayName || req.user.username,
             avatar: req.user._json.avatar_url,
             provider: req.user.provider
         };
-        console.log("success..2222222222222222222success.................success.................success.................")
+        // console.log("success..2222222222222222222success.................success.................success.................")
         res.redirect('/');
     });
 

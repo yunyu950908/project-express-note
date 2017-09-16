@@ -10470,7 +10470,7 @@ var NoteManager = function () {
     function load() {
         $.get('/api/notes').done(function (ret) {
             // console.log(ret)
-            if (ret.status == 0) {
+            if (ret.status === 0) {
                 $.each(ret.data, function (idx, article) {
                     _Note.Note.init({
                         id: article.id,
@@ -10653,6 +10653,7 @@ var Note = function () {
             if (this.opts.id) {
                 this.id = this.opts.id;
             }
+            console.log(opts);
         },
 
         // create DOM HTML element
@@ -10662,10 +10663,10 @@ var Note = function () {
             this.$note = $(tpl);
             this.$note.find('.note-ct').html(this.opts.context);
             this.opts.$ct.append(this.$note);
-            if (!this.id) this.$note.css({
-                top: "50px",
-                left: "50px"
-            });
+            if (!this.id) this.$note.animate({
+                top: (Math.random() + 1) * $(window).height() * 0.3,
+                left: (Math.random() + 1) * $(window).width() * 0.3
+            }, 100);
         },
 
         // set note style
@@ -10704,7 +10705,7 @@ var Note = function () {
                 if ($noteCt.html() == 'input here') $noteCt.html('');
                 $noteCt.data('before', $noteCt.html());
             }).on('blur paste', function () {
-                if ($noteCt.data('before') != $noteCt.html()) {
+                if ($noteCt.data('before') !== $noteCt.html()) {
                     $noteCt.data('before', $noteCt.html());
                     _this.setLayout();
                     if (_this.id) {
@@ -10739,7 +10740,9 @@ var Note = function () {
             var _this2 = this;
 
             console.log('add...');
-            $.post('/api/notes/add', { note: msg }).done(function (ret) {
+            $.post('/api/notes/add', {
+                note: msg
+            }).done(function (ret) {
                 if (ret.status === 0) {
                     _Toast.Toast.init('add success');
                 } else {

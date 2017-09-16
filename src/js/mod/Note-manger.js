@@ -8,7 +8,7 @@ const NoteManager = (function () {
         $.get('/api/notes')
             .done(ret => {
                 // console.log(ret)
-                if (ret.status == 0) {
+                if (ret.status === 0) {
                     $.each(ret.data, (idx, article) => {
                         Note.init({
                             id: article.id,

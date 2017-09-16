@@ -56,6 +56,6 @@ PORT=2233 node ./bin/www
 8. linux
 
 ## 其他
-1. bug 提交或其他问题，移步 [ issue ](./issues)
+1. bug 提交或其他问题，移步 [ issue ](../../issues)
 2. Author: AlbertLee
 3. 协议 [ MIT ](./LICENSE)

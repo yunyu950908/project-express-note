@@ -77,6 +77,8 @@ router.post("/notes/delete", (req, res, next) => {
     let uid = req.session.user.id;
     let noteId = req.body.id;
 
+    // todo BUG: in one loop ( haven't refresh ) Add note ==> id: null ==> then Destroy note ==> req.body.id: null ==> cannot destroy ( only refresh the browser ==> sqlite will automatically set the id )
+
     Note.destroy({where: {id: noteId, uid: uid}}).then((deleteLen) => {
         if (deleteLen === 0) {
             return res.send({

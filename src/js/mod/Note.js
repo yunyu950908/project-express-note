@@ -121,7 +121,7 @@ const Note = (function () {
 
         // add note
         add: function (msg) {
-            console.log('add...');
+            // console.log('add...');
             $.post('/api/notes/add', {
                 note: msg
             })
@@ -152,7 +152,7 @@ const Note = (function () {
 
         // delete note
         delete: function () {
-            console.log(this.id)
+            // console.log(this.id)
             $.post('/api/notes/delete', {id: this.id})
                 .done((ret) => {
                     if (ret.status === 0) {

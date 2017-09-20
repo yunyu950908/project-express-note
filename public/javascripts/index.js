@@ -10739,7 +10739,7 @@ var Note = function () {
         add: function add(msg) {
             var _this2 = this;
 
-            console.log('add...');
+            // console.log('add...');
             $.post('/api/notes/add', {
                 note: msg
             }).done(function (ret) {
@@ -10771,7 +10771,7 @@ var Note = function () {
         delete: function _delete() {
             var _this3 = this;
 
-            console.log(this.id);
+            // console.log(this.id)
             $.post('/api/notes/delete', { id: this.id }).done(function (ret) {
                 if (ret.status === 0) {
                     _Toast.Toast.init('delete success');

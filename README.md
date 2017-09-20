@@ -1,6 +1,8 @@
 # project-express-note
 project-express-note
 
+线上预览：http://note.liyu0906.cn/
+
 ## 使用方法
 
 ```bash
